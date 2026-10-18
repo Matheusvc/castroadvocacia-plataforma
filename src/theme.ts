@@ -1,0 +1,73 @@
+/**
+ * theme.ts — Fonte única de tokens de design (Castro Advocacia).
+ *
+ * Os valores sob `figma` foram extraídos diretamente das variáveis do arquivo
+ * Figma (node 3397-795). Os valores sob `assumed` NÃO existiam no Figma e foram
+ * assumidos para construir a superfície clara do chat; estão documentados no
+ * README (checklist de comparação).
+ *
+ * Este arquivo é consumido por `tailwind.config.ts` (gera as classes utilitárias)
+ * e pode ser importado em TS quando um token precisar ser usado em JS.
+ */
+
+export const colors = {
+  // --- Extraídos do Figma ---
+  blue: {
+    base: "#5165E1", // blue/base
+    light: "#8996EB", // blue/light — "ADVOCACIA", detalhes
+    dark: "#2E3DA3", // blue/dark — link ativo, títulos, avatar
+  },
+  fuschia: {
+    60: "#FCDDEC", // fuschia/60 — texto/ícone de link inativo na sidebar
+  },
+  gray: {
+    100: "#151619", // grayscale/gray-100 — fundo da sidebar / texto primário claro
+    200: "#1E2024", // grayscale/gray-200 — bordas, botão hambúrguer
+    400: "#858B99", // grayscale/gray-400 — texto secundário/mudo, cabeçalho de tabela
+    500: "#E3E5E8", // grayscale/gray-500 — bordas de tabela, botões de ação
+    600: "#F9FAFA", // grayscale/gray-600 — fundo do conteúdo / texto sobre escuro
+  },
+
+  // Cores de feedback/status (Figma — página Serviços)
+  danger: "#D03E3E", // feedback/danger — ícone de excluir
+  status: {
+    open: "#CC3D6A", // feedback/open — "Aberto"
+    progress: "#355EC5", // feedback/progress — "Em atendimento"
+    done: "#508B26", // feedback/done — "Encerrado"
+  },
+
+  // --- Assumidos (não existiam no Figma) para a superfície clara do chat ---
+  surface: "#FFFFFF", // balão recebido, campo de input
+  borderLight: "#E6E8EC", // bordas sobre fundo claro
+  bubbleReceived: "#FFFFFF",
+  bubbleSent: "#5165E1", // = blue.base
+} as const;
+
+export const radii = {
+  sm: "5px", // links de menu, botões (Figma)
+  bubble: "16px", // balões de mensagem (assumido)
+  content: "20px", // topo do conteúdo no mobile (Figma)
+  shell: "24px", // moldura externa do mobile (Figma)
+  full: "9999px", // avatares (Figma)
+} as const;
+
+export const fonts = {
+  sans: ["Lato", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
+} as const;
+
+/**
+ * Escala de fontes.
+ *
+ * Importante: definimos apenas `xxs` (o rótulo "ADVOCACIA") e deixamos
+ * xs/sm/base/lg/xl/2xl/3xl usarem a escala PADRÃO do Tailwind — que é em `rem`.
+ * Assim, as fontes acompanham o `font-size` do root (ver index.css) e o site
+ * fica em tamanho confortável/padrão. Valores em px fixos NÃO escalam, por isso
+ * não são usados aqui.
+ */
+export const fontSize = {
+  // 0.625rem ≈ 11px no root de 18px; bold + tracking, para "ADVOCACIA".
+  xxs: ["0.625rem", { lineHeight: "1.4", letterSpacing: "0.6px", fontWeight: "700" }],
+} as const;
+
+/** Breakpoint único que alterna o layout mobile (top bar) para desktop (sidebar). */
+export const layoutBreakpoint = "lg"; // 1024px
