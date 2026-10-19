@@ -11,6 +11,7 @@ export const SERVICE_STATUS_OPTIONS: StatusOption[] = [
   { value: "progress", label: "Em atendimento" },
   { value: "done", label: "Encerrado" },
   { value: "analise", label: "Em análise" },
+  { value: "pendente", label: "Pendente" },
 ];
 
 export const SERVICE_STATUS_LABELS: Record<ServiceStatus, string> =

@@ -56,4 +56,13 @@ export const mockServices: Service[] = [
     owner: { name: "Carlos Silva", initials: "CS" },
     status: "analise",
   },
+  {
+    id: "00007",
+    updatedAt: "09/04/25 17:05",
+    title: "Aguardando documentos do cliente",
+    service: "Suporte de Software",
+    total: "R$ 120,00",
+    owner: { name: "Ana Oliveira", initials: "AO" },
+    status: "pendente",
+  },
 ];

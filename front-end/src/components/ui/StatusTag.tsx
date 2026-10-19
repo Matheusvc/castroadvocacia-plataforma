@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { Clock3, Search } from "lucide-react";
 import { InlineIcon } from "@/components/layout/InlineIcon";
 import circleHelp from "@/assets/icon-circle-help.svg?raw";
 import clock2 from "@/assets/icon-clock-2.svg?raw";
@@ -33,6 +33,11 @@ const config: Record<
     text: "text-status-analise",
     bg: "bg-status-analise/20",
     icon: () => <Search size={16} aria-hidden="true" className="shrink-0" />,
+  },
+  pendente: {
+    text: "text-status-pendente",
+    bg: "bg-status-pendente/20",
+    icon: () => <Clock3 size={16} aria-hidden="true" className="shrink-0" />,
   },
 };
 

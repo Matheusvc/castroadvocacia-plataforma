@@ -35,6 +35,7 @@ export const colors = {
     progress: "#355EC5", // feedback/progress — "Em atendimento"
     done: "#508B26", // feedback/done — "Encerrado"
     analise: "#B9770E", // feedback/analise — "Em análise" (não existia no Figma)
+    pendente: "#8996EB", // = blue.light — "Pendente" (não existia no Figma)
   },
 
   // --- Assumidos (não existiam no Figma) para a superfície clara do chat ---

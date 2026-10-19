@@ -11,7 +11,14 @@ export interface ReportData {
     pending: number;
     deltas: { total: number; active: number; inactive: number; pending: number };
   };
-  services: { open: number; progress: number; done: number; total: number };
+  services: {
+    open: number;
+    progress: number;
+    done: number;
+    analise: number;
+    pendente: number;
+    total: number;
+  };
 }
 
 const pct = (value: number, total: number) =>
@@ -49,10 +56,12 @@ function buildCsv(d: ReportData): string {
     ["Inativos", String(c.inactive), pct(c.inactive, c.total)],
     ["Pendentes", String(c.pending), pct(c.pending, c.total)],
     [],
-    ["Serviços por status", "Quantidade", "Percentual"],
+    ["Processos por status", "Quantidade", "Percentual"],
     ["Aberto", String(s.open), pct(s.open, s.total)],
+    ["Em análise", String(s.analise), pct(s.analise, s.total)],
     ["Em atendimento", String(s.progress), pct(s.progress, s.total)],
-    ["Encerrado", String(s.done), pct(s.done, s.total)],
+    ["Concluído", String(s.done), pct(s.done, s.total)],
+    ["Pendente", String(s.pendente), pct(s.pendente, s.total)],
   ];
   const body = rows
     .map((r) => r.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(";"))
@@ -110,11 +119,13 @@ function buildReportHtml(d: ReportData): string {
     ${row("Pendentes", c.pending, pct(c.pending, c.total))}
   </tbody></table>
 
-  <h2>Serviços por status</h2>
+  <h2>Processos por status</h2>
   <table><thead><tr><th>Status</th><th class="num">Quantidade</th><th class="num">Percentual</th></tr></thead><tbody>
     ${row("Aberto", s.open, pct(s.open, s.total))}
+    ${row("Em análise", s.analise, pct(s.analise, s.total))}
     ${row("Em atendimento", s.progress, pct(s.progress, s.total))}
-    ${row("Encerrado", s.done, pct(s.done, s.total))}
+    ${row("Concluído", s.done, pct(s.done, s.total))}
+    ${row("Pendente", s.pendente, pct(s.pendente, s.total))}
   </tbody></table>
 
   <footer>Gerado em ${new Date().toLocaleString("pt-BR")} · Castro Advocacia</footer>

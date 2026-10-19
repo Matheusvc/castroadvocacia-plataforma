@@ -12,9 +12,10 @@ export interface Client {
 
 /**
  * Status de um serviço (Figma: feedback/open, /progress, /done).
- * "analise" não existia no Figma; foi adicionado para o fluxo de triagem.
+ * "analise" e "pendente" não existiam no Figma; foram adicionados para o
+ * fluxo de triagem e para serviços aguardando retorno do cliente.
  */
-export type ServiceStatus = "open" | "progress" | "done" | "analise";
+export type ServiceStatus = "open" | "progress" | "done" | "analise" | "pendente";
 
 export interface Service {
   /** Id exibido (ex.: "00003"). */

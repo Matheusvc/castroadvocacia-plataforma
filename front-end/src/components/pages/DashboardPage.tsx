@@ -4,10 +4,9 @@ import { colors } from "@/theme";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { DonutChart } from "@/components/dashboard/DonutChart";
 import { StatusBarChart } from "@/components/dashboard/StatusBarChart";
-import { ProcessStatusChart } from "@/components/dashboard/ProcessStatusChart";
 import { ExportReportButton } from "@/components/dashboard/ExportReportButton";
 import { usePersistentState } from "@/hooks/usePersistentState";
-import { clientStats, clientDeltas, processStats } from "@/data/mockDashboard";
+import { clientStats, clientDeltas } from "@/data/mockDashboard";
 import { mockServices } from "@/data/mockServices";
 import type { Service } from "@/types/entities";
 
@@ -53,19 +52,14 @@ function ChartCard({
 /** Dashboard: indicadores de clientes + gráficos de status. */
 export function DashboardPage() {
   const { total, active, inactive, pending } = clientStats;
-  const {
-    total: processTotal,
-    open: processOpen,
-    inAnalysis: processInAnalysis,
-    done: processDone,
-    pending: processPending,
-  } = processStats;
 
   // Lê os serviços persistidos (reflete criações/edições da página Serviços).
   const [services] = usePersistentState<Service[]>("castro.services", mockServices);
   const open = services.filter((s) => s.status === "open").length;
   const progress = services.filter((s) => s.status === "progress").length;
   const done = services.filter((s) => s.status === "done").length;
+  const analise = services.filter((s) => s.status === "analise").length;
+  const pendenteServicos = services.filter((s) => s.status === "pendente").length;
 
   const kpis = [
     {
@@ -125,6 +119,8 @@ export function DashboardPage() {
               open,
               progress,
               done,
+              analise,
+              pendente: pendenteServicos,
               total: services.length,
             },
           }}
@@ -169,36 +165,22 @@ export function DashboardPage() {
         </ChartCard>
 
         <ChartCard
-          title="Serviços por status"
+          title="Processos por status"
           caption={`${services.length} no total`}
           style={stagger(6)}
         >
           <StatusBarChart
-            ariaLabel={`Serviços por status: ${open} abertos, ${progress} em atendimento, ${done} encerrados`}
+            ariaLabel={`Processos por status: ${open} abertos, ${analise} em análise, ${progress} em atendimento, ${done} concluídos, ${pendenteServicos} pendentes`}
             data={[
               { label: "Aberto", value: open, color: colors.status.open },
+              { label: "Em análise", value: analise, color: colors.status.analise },
               { label: "Em atendimento", value: progress, color: colors.status.progress },
-              { label: "Encerrado", value: done, color: colors.status.done },
+              { label: "Concluído", value: done, color: colors.status.done },
+              { label: "Pendente", value: pendenteServicos, color: colors.status.pendente },
             ]}
           />
         </ChartCard>
       </div>
-
-      <ChartCard
-        title="Processos por status"
-        caption={`${processTotal} no total`}
-        style={stagger(7)}
-      >
-        <ProcessStatusChart
-          ariaLabel={`Processos por status: ${processOpen} abertos, ${processInAnalysis} em análise, ${processDone} concluídos, ${processPending} pendentes`}
-          segments={[
-            { label: "Aberto", value: processOpen, color: colors.status.open },
-            { label: "Em análise", value: processInAnalysis, color: colors.status.progress },
-            { label: "Concluído", value: processDone, color: colors.status.done },
-            { label: "Pendente", value: processPending, color: colors.blue.light },
-          ]}
-        />
-      </ChartCard>
     </div>
   );
 }
