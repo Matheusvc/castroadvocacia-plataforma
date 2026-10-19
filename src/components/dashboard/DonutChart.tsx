@@ -33,14 +33,15 @@ export function DonutChart({
   let acc = 0;
 
   return (
-    <div className="flex flex-col items-center gap-5 sm:flex-row sm:gap-8">
-      <div className="relative shrink-0" style={{ width: SIZE, height: SIZE }}>
+    <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-8">
+      <div className="relative aspect-square w-full max-w-[180px] shrink-0 sm:w-[200px] sm:max-w-none">
         <svg
-          width={SIZE}
-          height={SIZE}
+          width="100%"
+          height="100%"
           viewBox={`0 0 ${SIZE} ${SIZE}`}
           role="img"
           aria-label={ariaLabel}
+          className="block"
         >
           {/* trilho */}
           <circle
