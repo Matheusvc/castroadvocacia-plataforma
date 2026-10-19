@@ -16,6 +16,7 @@ backend/.idea
 backend/*.class
 
 # === Geral ===
+node_modules/
 .DS_Store
 *.log
 npm-debug.log*
