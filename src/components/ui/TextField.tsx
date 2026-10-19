@@ -7,6 +7,8 @@ interface TextFieldProps {
   type?: "text" | "email";
   required?: boolean;
   placeholder?: string;
+  /** Dica de teclado virtual (ex.: "numeric" para campos de valor). */
+  inputMode?: "text" | "numeric" | "decimal";
 }
 
 /** Campo de texto rotulado para formulários. */
@@ -17,6 +19,7 @@ export function TextField({
   type = "text",
   required,
   placeholder,
+  inputMode,
 }: TextFieldProps) {
   const id = useId();
   return (
@@ -29,6 +32,7 @@ export function TextField({
         id={id}
         type={type}
         value={value}
+        inputMode={inputMode}
         required={required}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}

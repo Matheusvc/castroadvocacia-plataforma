@@ -34,6 +34,7 @@ export const colors = {
     open: "#CC3D6A", // feedback/open — "Aberto"
     progress: "#355EC5", // feedback/progress — "Em atendimento"
     done: "#508B26", // feedback/done — "Encerrado"
+    analise: "#B9770E", // feedback/analise — "Em análise" (não existia no Figma)
   },
 
   // --- Assumidos (não existiam no Figma) para a superfície clara do chat ---

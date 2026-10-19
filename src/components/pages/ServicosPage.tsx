@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { PenLine, Plus } from "lucide-react";
+import { Download, PenLine, Plus } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { IconButton } from "@/components/ui/IconButton";
 import { SearchInput } from "@/components/ui/SearchInput";
@@ -12,8 +12,56 @@ import {
 } from "@/components/servicos/ServiceFormModal";
 import { usePersistentState } from "@/hooks/usePersistentState";
 import { initialsFromName } from "@/lib/initials";
+import { formatTotalDisplay } from "@/lib/currency";
+import { SERVICE_STATUS_LABELS, SERVICE_STATUS_OPTIONS } from "@/lib/serviceStatus";
 import { mockServices } from "@/data/mockServices";
-import type { Service } from "@/types/entities";
+import type { Service, ServiceStatus } from "@/types/entities";
+
+type StatusFilter = "all" | ServiceStatus;
+
+const FILTERS: { value: StatusFilter; label: string }[] = [
+  { value: "all", label: "Geral" },
+  ...SERVICE_STATUS_OPTIONS,
+];
+
+/** Gera e baixa um arquivo a partir de texto. */
+function downloadText(filename: string, text: string, mime: string) {
+  const blob = new Blob([text], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+/** Monta o CSV (com BOM, para acentuação correta no Excel) da lista de serviços. */
+function buildServicesCsv(services: Service[]): string {
+  const header = [
+    "Id",
+    "Atualizado em",
+    "Título",
+    "Serviço",
+    "Valor total",
+    "Responsável",
+    "Status",
+  ];
+  const rows = services.map((s) => [
+    s.id,
+    s.updatedAt,
+    s.title,
+    s.service,
+    formatTotalDisplay(s.total),
+    s.owner.name,
+    SERVICE_STATUS_LABELS[s.status],
+  ]);
+  const body = [header, ...rows]
+    .map((r) => r.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(";"))
+    .join("\r\n");
+  return `﻿${body}`;
+}
 
 /** Data/hora atual no formato do Figma: dd/MM/aa HH:mm. */
 function formatNow(): string {
@@ -35,16 +83,36 @@ export function ServicosPage() {
     mockServices,
   );
   const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Service | null>(null);
 
+  const counts = useMemo(() => {
+    const c: Partial<Record<StatusFilter, number>> = { all: services.length };
+    for (const s of services) c[s.status] = (c[s.status] ?? 0) + 1;
+    return c;
+  }, [services]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return services;
-    return services.filter((s) =>
-      [s.id, s.title, s.service, s.owner.name].join(" ").toLowerCase().includes(q),
+    return services.filter((s) => {
+      if (statusFilter !== "all" && s.status !== statusFilter) return false;
+      if (!q) return true;
+      return [s.id, s.title, s.service, s.owner.name]
+        .join(" ")
+        .toLowerCase()
+        .includes(q);
+    });
+  }, [services, query, statusFilter]);
+
+  const handleExport = () => {
+    const stamp = new Date().toISOString().slice(0, 10);
+    downloadText(
+      `servicos-${stamp}.csv`,
+      buildServicesCsv(filtered),
+      "text/csv;charset=utf-8",
     );
-  }, [services, query]);
+  };
 
   const openNew = () => {
     setEditing(null);
@@ -106,11 +174,53 @@ export function ServicosPage() {
             label="Buscar serviços"
             placeholder="Buscar por título, serviço ou responsável…"
           />
+          <Button
+            variant="secondary"
+            onClick={handleExport}
+            className="shrink-0"
+            disabled={filtered.length === 0}
+          >
+            <Download size={16} aria-hidden="true" className="mr-1.5" />
+            Exportar planilhas
+          </Button>
           <Button onClick={openNew} className="shrink-0">
             <Plus size={16} aria-hidden="true" className="mr-1.5" />
             Novo
           </Button>
         </div>
+      </div>
+
+      <div
+        role="tablist"
+        aria-label="Filtrar serviços por status"
+        className="flex flex-wrap items-center gap-2"
+      >
+        {FILTERS.map((f) => {
+          const active = statusFilter === f.value;
+          return (
+            <button
+              key={f.value}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              onClick={() => setStatusFilter(f.value)}
+              className={`inline-flex h-9 items-center gap-1.5 rounded-full px-4 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-base focus-visible:ring-offset-1 ${
+                active
+                  ? "bg-blue-base text-gray-600"
+                  : "border border-gray-500 text-gray-200 hover:bg-gray-600"
+              }`}
+            >
+              {f.label.toUpperCase()}
+              <span
+                className={`rounded-full px-1.5 text-xs ${
+                  active ? "bg-gray-600/25" : "bg-gray-500 text-gray-400"
+                }`}
+              >
+                {counts[f.value] ?? 0}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       <div className="overflow-x-auto">
@@ -146,7 +256,7 @@ export function ServicosPage() {
               {filtered.map((service) => (
                 <tr
                   key={service.id}
-                  className="h-16 border-b border-gray-500 last:border-b-0"
+                  className="h-16 border-b border-gray-500 transition-colors last:border-b-0 hover:bg-gray-600"
                 >
                   <td className="whitespace-nowrap px-3 align-middle text-sm text-gray-200">
                     {service.updatedAt}
@@ -162,8 +272,8 @@ export function ServicosPage() {
                       {service.service}
                     </span>
                   </td>
-                  <td className="px-3 align-middle text-sm text-gray-200">
-                    {service.total}
+                  <td className="whitespace-nowrap px-3 align-middle text-sm font-bold tabular-nums text-gray-200">
+                    {formatTotalDisplay(service.total)}
                   </td>
                   <td className="px-3 align-middle">
                     <div className="flex items-center gap-2">
@@ -193,7 +303,9 @@ export function ServicosPage() {
                   <td colSpan={7} className="px-3 py-10 text-center text-sm text-gray-400">
                     {query
                       ? `Nenhum serviço encontrado para “${query}”.`
-                      : "Nenhum serviço cadastrado."}
+                      : statusFilter !== "all"
+                        ? "Nenhum serviço com esse status."
+                        : "Nenhum serviço cadastrado."}
                   </td>
                 </tr>
               )}

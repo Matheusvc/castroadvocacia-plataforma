@@ -3,6 +3,8 @@ import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
 import { SelectField } from "@/components/ui/SelectField";
+import { maskCurrencyInput } from "@/lib/currency";
+import { SERVICE_STATUS_OPTIONS } from "@/lib/serviceStatus";
 import type { Service, ServiceStatus } from "@/types/entities";
 
 /** Valores editáveis de um serviço. */
@@ -22,11 +24,7 @@ interface ServiceFormModalProps {
   onClose: () => void;
 }
 
-const statusOptions = [
-  { value: "open", label: "Aberto" },
-  { value: "progress", label: "Em atendimento" },
-  { value: "done", label: "Encerrado" },
-];
+const statusOptions = SERVICE_STATUS_OPTIONS;
 
 /** Formulário de criação/edição de serviço. */
 export function ServiceFormModal({
@@ -45,7 +43,7 @@ export function ServiceFormModal({
     if (!open) return;
     setTitle(service?.title ?? "");
     setServiceName(service?.service ?? "");
-    setTotal(service?.total ?? "");
+    setTotal(maskCurrencyInput(service?.total ?? ""));
     setOwner(service?.owner.name ?? "");
     setStatus(service?.status ?? "open");
   }, [open, service]);
@@ -75,7 +73,8 @@ export function ServiceFormModal({
         <TextField
           label="Valor total"
           value={total}
-          onChange={setTotal}
+          onChange={(v) => setTotal(maskCurrencyInput(v))}
+          inputMode="numeric"
           placeholder="R$ 0,00"
         />
         <TextField label="Responsável" value={owner} onChange={setOwner} />
