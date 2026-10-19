@@ -1,4 +1,5 @@
 import type { Conversation } from "@/types/chat";
+import { mockReceiptImage } from "./mockImages";
 
 const MIN = 60_000;
 const now = Date.now();
@@ -10,7 +11,14 @@ const now = Date.now();
 export const mockConversations: Conversation[] = [
   {
     id: "conv-1",
-    contact: { name: "André Costa", initials: "AC", role: "Cliente", online: true },
+    contact: {
+      name: "André Costa",
+      initials: "AC",
+      role: "Cliente",
+      online: true,
+      phone: "(11) 91234-5678",
+      about: "Disponível",
+    },
     lastMessage: "Gostaria de saber como está o andamento do meu processo.",
     lastTime: now - 2 * MIN,
     unread: 2,
@@ -31,7 +39,14 @@ export const mockConversations: Conversation[] = [
   },
   {
     id: "conv-2",
-    contact: { name: "Julia Maria", initials: "JM", role: "Cliente", online: true },
+    contact: {
+      name: "Julia Maria",
+      initials: "JM",
+      role: "Cliente",
+      online: true,
+      phone: "(11) 99876-5432",
+      about: "Aguardando retorno sobre a reunião",
+    },
     lastMessage: "Perfeito, muito obrigada pelo retorno!",
     lastTime: now - 26 * MIN,
     unread: 0,
@@ -59,7 +74,14 @@ export const mockConversations: Conversation[] = [
   },
   {
     id: "conv-3",
-    contact: { name: "Marcelo Andrade", initials: "MA", role: "Cliente", online: false },
+    contact: {
+      name: "Marcelo Andrade",
+      initials: "MA",
+      role: "Cliente",
+      online: false,
+      phone: "(11) 93456-7890",
+      about: "Prefere contato por telefone após as 18h",
+    },
     lastMessage: "Enviei os documentos por e-mail, pode conferir?",
     lastTime: now - 3 * 60 * MIN,
     unread: 1,
@@ -67,14 +89,27 @@ export const mockConversations: Conversation[] = [
       {
         id: "c3m1",
         author: "them",
-        text: "Enviei os documentos por e-mail, pode conferir?",
+        text: "Enviei os documentos por e-mail, pode conferir? Tirei uma foto também, segue aqui:",
+        createdAt: now - 3 * 60 * MIN - 30_000,
+      },
+      {
+        id: "c3m2",
+        author: "them",
+        image: mockReceiptImage("Documento — Marcelo Andrade"),
         createdAt: now - 3 * 60 * MIN,
       },
     ],
   },
   {
     id: "conv-4",
-    contact: { name: "Aline Souza", initials: "AS", role: "Cliente", online: false },
+    contact: {
+      name: "Aline Souza",
+      initials: "AS",
+      role: "Cliente",
+      online: false,
+      phone: "(11) 97654-3210",
+      about: "Disponível",
+    },
     lastMessage: "Obrigada! Fico no aguardo.",
     lastTime: now - 26 * 60 * MIN,
     unread: 0,

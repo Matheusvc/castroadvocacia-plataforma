@@ -207,13 +207,13 @@ export function ServicosPage() {
               className={`inline-flex h-9 items-center gap-1.5 rounded-full px-4 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-base focus-visible:ring-offset-1 ${
                 active
                   ? "bg-blue-base text-gray-600"
-                  : "border border-gray-500 text-gray-200 hover:bg-gray-600"
+                  : "border border-gray-500 text-gray-200 hover:bg-gray-600 dark:border-night-border dark:text-night-text dark:hover:bg-night-border/60"
               }`}
             >
               {f.label.toUpperCase()}
               <span
                 className={`rounded-full px-1.5 text-xs ${
-                  active ? "bg-gray-600/25" : "bg-gray-500 text-gray-400"
+                  active ? "bg-gray-600/25" : "bg-gray-500 text-gray-400 dark:bg-night-border"
                 }`}
               >
                 {counts[f.value] ?? 0}
@@ -224,11 +224,11 @@ export function ServicosPage() {
       </div>
 
       <div className="overflow-x-auto">
-        <div className="min-w-[920px] overflow-hidden rounded-[10px] border border-gray-500">
+        <div className="min-w-[920px] overflow-hidden rounded-[10px] border border-gray-500 dark:border-night-border">
           <table className="w-full border-collapse text-left">
             <caption className="sr-only">Lista de serviços e chamados</caption>
             <thead>
-              <tr className="h-12 border-b border-gray-500">
+              <tr className="h-12 border-b border-gray-500 dark:border-night-border">
                 <th scope="col" className="w-[150px] whitespace-nowrap px-3 text-sm font-bold text-gray-400">
                   Atualizado em
                 </th>
@@ -256,29 +256,29 @@ export function ServicosPage() {
               {filtered.map((service) => (
                 <tr
                   key={service.id}
-                  className="h-16 border-b border-gray-500 transition-colors last:border-b-0 hover:bg-gray-600"
+                  className="h-16 border-b border-gray-500 transition-colors last:border-b-0 hover:bg-gray-600 dark:border-night-border dark:hover:bg-night-border/30"
                 >
-                  <td className="whitespace-nowrap px-3 align-middle text-sm text-gray-200">
+                  <td className="whitespace-nowrap px-3 align-middle text-sm text-gray-200 dark:text-night-text">
                     {service.updatedAt}
                   </td>
-                  <td className="px-3 align-middle text-sm font-bold text-gray-200">
+                  <td className="px-3 align-middle text-sm font-bold text-gray-200 dark:text-night-text">
                     {service.id}
                   </td>
                   <td className="px-3 align-middle">
-                    <span className="block truncate text-sm font-bold text-gray-200">
+                    <span className="block truncate text-sm font-bold text-gray-200 dark:text-night-text">
                       {service.title}
                     </span>
-                    <span className="block truncate text-xs text-gray-200">
+                    <span className="block truncate text-xs text-gray-200 dark:text-night-text">
                       {service.service}
                     </span>
                   </td>
-                  <td className="whitespace-nowrap px-3 align-middle text-sm font-bold tabular-nums text-gray-200">
+                  <td className="whitespace-nowrap px-3 align-middle text-sm font-bold tabular-nums text-gray-200 dark:text-night-text">
                     {formatTotalDisplay(service.total)}
                   </td>
                   <td className="px-3 align-middle">
                     <div className="flex items-center gap-2">
                       <Avatar initials={service.owner.initials} size="xxs" />
-                      <span className="truncate text-sm text-gray-200">
+                      <span className="truncate text-sm text-gray-200 dark:text-night-text">
                         {service.owner.name}
                       </span>
                     </div>

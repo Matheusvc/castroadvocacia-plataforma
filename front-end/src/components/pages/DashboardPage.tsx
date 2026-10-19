@@ -2,13 +2,14 @@ import type { CSSProperties, ReactNode } from "react";
 import { Clock3, Users, UserCheck, UserX } from "lucide-react";
 import { colors } from "@/theme";
 import { StatCard } from "@/components/dashboard/StatCard";
-import { DonutChart } from "@/components/dashboard/DonutChart";
 import { StatusBarChart } from "@/components/dashboard/StatusBarChart";
 import { ExportReportButton } from "@/components/dashboard/ExportReportButton";
-import { usePersistentState } from "@/hooks/usePersistentState";
-import { clientStats, clientDeltas } from "@/data/mockDashboard";
-import { mockServices } from "@/data/mockServices";
-import type { Service } from "@/types/entities";
+import {
+  clientStats,
+  clientDeltas,
+  adminProcessStats,
+  judicialProcessStats,
+} from "@/data/mockDashboard";
 
 const rawDate = new Intl.DateTimeFormat("pt-BR", {
   weekday: "long",
@@ -36,10 +37,10 @@ function ChartCard({
   return (
     <section
       style={style}
-      className="flex min-w-0 animate-fade-in-up flex-col gap-5 rounded-xl border border-gray-500/70 bg-surface p-5 shadow-card transition-shadow duration-200 motion-reduce:animate-none sm:p-6 hover:shadow-card-hover"
+      className="flex min-w-0 animate-fade-in-up flex-col gap-5 rounded-xl border border-gray-500/70 bg-surface p-5 shadow-card transition-shadow duration-200 motion-reduce:animate-none dark:border-night-border dark:bg-night-surface dark:shadow-none sm:p-6 hover:shadow-card-hover"
     >
-      <div className="flex items-baseline justify-between gap-2 border-b border-gray-500/60 pb-4">
-        <h2 className="text-sm font-bold text-gray-100">{title}</h2>
+      <div className="flex items-baseline justify-between gap-2 border-b border-gray-500/60 pb-4 dark:border-night-border">
+        <h2 className="text-sm font-bold text-gray-100 dark:text-night-text">{title}</h2>
         {caption && (
           <span className="shrink-0 text-xs font-medium text-gray-400">{caption}</span>
         )}
@@ -53,13 +54,18 @@ function ChartCard({
 export function DashboardPage() {
   const { total, active, inactive, pending } = clientStats;
 
-  // Lê os serviços persistidos (reflete criações/edições da página Serviços).
-  const [services] = usePersistentState<Service[]>("castro.services", mockServices);
-  const open = services.filter((s) => s.status === "open").length;
-  const progress = services.filter((s) => s.status === "progress").length;
-  const done = services.filter((s) => s.status === "done").length;
-  const analise = services.filter((s) => s.status === "analise").length;
-  const pendenteServicos = services.filter((s) => s.status === "pendente").length;
+  const adminTotal =
+    adminProcessStats.open +
+    adminProcessStats.inAnalysis +
+    adminProcessStats.granted +
+    adminProcessStats.pending;
+
+  const judicialTotal =
+    judicialProcessStats.denied +
+    judicialProcessStats.inCourt +
+    judicialProcessStats.settlementOffer +
+    judicialProcessStats.favorableRuling +
+    judicialProcessStats.pending;
 
   const kpis = [
     {
@@ -100,7 +106,7 @@ export function DashboardPage() {
     <div className="scrollbar-slim flex min-h-0 flex-1 flex-col gap-7 overflow-y-auto px-6 pb-8 pt-7 lg:px-12 lg:pb-12 lg:pt-[52px]">
       <header className="flex animate-fade-in-up flex-col gap-4 motion-reduce:animate-none sm:flex-row sm:items-start sm:justify-between">
         <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-bold leading-tight text-gray-100">Dashboard</h1>
+          <h1 className="text-2xl font-bold leading-tight text-gray-100 dark:text-night-text">Dashboard</h1>
           <p className="text-sm text-gray-400">
             Visão geral do escritório · {dateLabel}
           </p>
@@ -115,14 +121,8 @@ export function DashboardPage() {
               pending,
               deltas: clientDeltas,
             },
-            services: {
-              open,
-              progress,
-              done,
-              analise,
-              pendente: pendenteServicos,
-              total: services.length,
-            },
+            adminProcess: { ...adminProcessStats, total: adminTotal },
+            judicialProcess: { ...judicialProcessStats, total: judicialTotal },
           }}
         />
       </header>
@@ -148,35 +148,62 @@ export function DashboardPage() {
       {/* Gráficos */}
       <div className="grid gap-5 lg:grid-cols-2">
         <ChartCard
-          title="Status dos clientes"
-          caption={`${total} no total`}
+          title="Processos por status administrativo"
+          caption={`${adminTotal} no total`}
           style={stagger(5)}
         >
-          <DonutChart
-            centerValue={total}
-            centerLabel="clientes"
-            ariaLabel={`Distribuição de clientes: ${active} ativos, ${inactive} inativos, ${pending} pendentes`}
-            segments={[
-              { label: "Ativos", value: active, color: colors.status.done },
-              { label: "Inativos", value: inactive, color: colors.gray[400] },
-              { label: "Pendentes", value: pending, color: colors.status.open },
+          <StatusBarChart
+            ariaLabel={`Processos por status administrativo: ${adminProcessStats.open} abertos, ${adminProcessStats.inAnalysis} em análise, ${adminProcessStats.granted} concedidos, ${adminProcessStats.pending} pendentes`}
+            data={[
+              { label: "Aberto", value: adminProcessStats.open, color: colors.status.open },
+              {
+                label: "Em análise",
+                value: adminProcessStats.inAnalysis,
+                color: colors.status.analise,
+              },
+              {
+                label: "Concedido",
+                value: adminProcessStats.granted,
+                color: colors.status.granted,
+              },
+              {
+                label: "Pendente",
+                value: adminProcessStats.pending,
+                color: colors.status.pendente,
+              },
             ]}
           />
         </ChartCard>
 
         <ChartCard
-          title="Processos por status"
-          caption={`${services.length} no total`}
+          title="Processos por status judicial"
+          caption={`${judicialTotal} no total`}
           style={stagger(6)}
         >
           <StatusBarChart
-            ariaLabel={`Processos por status: ${open} abertos, ${analise} em análise, ${progress} em atendimento, ${done} concluídos, ${pendenteServicos} pendentes`}
+            ariaLabel={`Processos por status judicial: ${judicialProcessStats.denied} indeferidos, ${judicialProcessStats.inCourt} tramitando no judicial, ${judicialProcessStats.settlementOffer} com proposta de acordo, ${judicialProcessStats.favorableRuling} com sentença procedente, ${judicialProcessStats.pending} pendentes`}
             data={[
-              { label: "Aberto", value: open, color: colors.status.open },
-              { label: "Em análise", value: analise, color: colors.status.analise },
-              { label: "Em atendimento", value: progress, color: colors.status.progress },
-              { label: "Concluído", value: done, color: colors.status.done },
-              { label: "Pendente", value: pendenteServicos, color: colors.status.pendente },
+              { label: "Indeferido", value: judicialProcessStats.denied, color: colors.danger },
+              {
+                label: "Tramitando no judicial",
+                value: judicialProcessStats.inCourt,
+                color: colors.status.progress,
+              },
+              {
+                label: "Proposta de acordo",
+                value: judicialProcessStats.settlementOffer,
+                color: colors.status.analise,
+              },
+              {
+                label: "Sentença procedente",
+                value: judicialProcessStats.favorableRuling,
+                color: colors.status.granted,
+              },
+              {
+                label: "Pendente",
+                value: judicialProcessStats.pending,
+                color: colors.status.pendente,
+              },
             ]}
           />
         </ChartCard>

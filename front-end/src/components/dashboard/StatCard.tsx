@@ -40,7 +40,7 @@ export function StatCard({
     <article
       style={style}
       className={cn(
-        "group flex flex-col gap-3 rounded-xl border border-gray-500/70 bg-surface p-5 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-base/30 hover:shadow-card-hover",
+        "group flex flex-col gap-3 rounded-xl border border-gray-500/70 bg-surface p-5 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-base/30 hover:shadow-card-hover dark:border-night-border dark:bg-night-surface dark:shadow-none",
         className,
       )}
     >
@@ -60,7 +60,7 @@ export function StatCard({
       </div>
 
       <div className="flex items-end justify-between gap-2">
-        <span className="text-3xl font-bold leading-none tabular-nums text-gray-100">
+        <span className="text-3xl font-bold leading-none tabular-nums text-gray-100 dark:text-night-text">
           {value}
         </span>
         {hasDelta && (

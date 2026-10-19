@@ -15,7 +15,8 @@ interface ChatPanelProps {
  * Painel de chat completo (cabeçalho + lista + input) para uma conversa.
  */
 export function ChatPanel({ contact, initialMessages, onBack }: ChatPanelProps) {
-  const { messages, isTyping, sendMessage, retryMessage } = useChat(initialMessages);
+  const { messages, isTyping, sendMessage, sendImage, retryMessage } =
+    useChat(initialMessages);
 
   return (
     <section
@@ -30,7 +31,7 @@ export function ChatPanel({ contact, initialMessages, onBack }: ChatPanelProps) 
         contactInitials={contact.initials}
         onRetry={retryMessage}
       />
-      <MessageInput onSend={sendMessage} />
+      <MessageInput onSend={sendMessage} onSendImage={sendImage} />
     </section>
   );
 }

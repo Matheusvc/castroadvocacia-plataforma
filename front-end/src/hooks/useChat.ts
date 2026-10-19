@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChatMessage, MessageStatus } from "@/types/chat";
 import { mockMessages } from "@/data/mockMessages";
+import { mockReceiptImage } from "@/data/mockImages";
 
 /** Gera um id único (com fallback para ambientes sem crypto.randomUUID). */
 function createId(): string {
@@ -18,6 +19,9 @@ const AUTO_REPLIES = [
   "Obrigada pela informação! Deixo tudo encaminhado.",
 ];
 
+/** Imagem de resposta automática quando o usuário envia uma foto (demonstra o recebimento). */
+const AUTO_REPLY_IMAGE = mockReceiptImage("Recebido pelo atendente");
+
 interface UseChatOptions {
   /** Atraso simulado de envio (ms). */
   sendDelay?: number;
@@ -31,6 +35,8 @@ export interface UseChatResult {
   isTyping: boolean;
   /** Envia uma nova mensagem do usuário. Retorna o id criado. */
   sendMessage: (text: string) => string | undefined;
+  /** Envia uma imagem (data URL). Retorna o id criado. */
+  sendImage: (dataUrl: string) => string | undefined;
   /** Reenvia uma mensagem que falhou. */
   retryMessage: (id: string) => void;
 }
@@ -76,34 +82,45 @@ export function useChat(
     );
   }, []);
 
-  const addAutoReply = useCallback(() => {
-    setIsTyping(true);
-    schedule(() => {
-      const reply =
-        AUTO_REPLIES[Math.floor(Math.random() * AUTO_REPLIES.length)] ??
-        AUTO_REPLIES[0];
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: createId(),
-          author: "them",
-          text: reply,
-          createdAt: Date.now(),
-        },
-      ]);
-      setIsTyping(false);
-    }, replyDelay);
-  }, [replyDelay, schedule]);
+  const addAutoReply = useCallback(
+    (asImage: boolean) => {
+      setIsTyping(true);
+      schedule(() => {
+        setMessages((prev) => [
+          ...prev,
+          asImage
+            ? {
+                id: createId(),
+                author: "them",
+                image: AUTO_REPLY_IMAGE,
+                createdAt: Date.now(),
+              }
+            : {
+                id: createId(),
+                author: "them",
+                text:
+                  AUTO_REPLIES[Math.floor(Math.random() * AUTO_REPLIES.length)] ??
+                  AUTO_REPLIES[0],
+                createdAt: Date.now(),
+              },
+        ]);
+        setIsTyping(false);
+      }, replyDelay);
+    },
+    [replyDelay, schedule],
+  );
 
   const deliver = useCallback(
-    (id: string, text: string) => {
-      const willFail = text.toLowerCase().includes("erro");
+    (id: string, text?: string, isImage = false) => {
+      const willFail = (text ?? "").toLowerCase().includes("erro");
       schedule(() => {
         if (willFail) {
           setStatus(id, "error");
         } else {
           setStatus(id, "sent");
-          addAutoReply();
+          // Quando o usuário manda uma foto, o atendente "responde" com uma
+          // foto também — demonstra visivelmente o recebimento de imagens.
+          addAutoReply(isImage);
         }
       }, sendDelay);
     },
@@ -132,24 +149,45 @@ export function useChat(
     [deliver],
   );
 
+  const sendImage = useCallback(
+    (dataUrl: string): string | undefined => {
+      if (!dataUrl) return undefined;
+
+      const id = createId();
+      setMessages((prev) => [
+        ...prev,
+        {
+          id,
+          author: "me",
+          image: dataUrl,
+          createdAt: Date.now(),
+          status: "sending",
+        },
+      ]);
+      deliver(id, undefined, true);
+      return id;
+    },
+    [deliver],
+  );
+
   const retryMessage = useCallback(
     (id: string) => {
       let text: string | undefined;
+      let isImage = false;
       setMessages((prev) =>
         prev.map((m) => {
           if (m.id === id) {
             text = m.text;
+            isImage = Boolean(m.image);
             return { ...m, status: "sending" };
           }
           return m;
         }),
       );
-      if (text !== undefined) {
-        deliver(id, text);
-      }
+      deliver(id, text, isImage);
     },
     [deliver],
   );
 
-  return { messages, isTyping, sendMessage, retryMessage };
+  return { messages, isTyping, sendMessage, sendImage, retryMessage };
 }

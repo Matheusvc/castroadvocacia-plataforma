@@ -25,7 +25,7 @@ export function StatusBarChart({ data, ariaLabel }: StatusBarChartProps) {
         return (
           <li key={d.label} className="flex flex-col gap-2">
             <div className="flex items-center justify-between gap-3 text-sm">
-              <span className="flex min-w-0 items-center gap-2 text-gray-200">
+              <span className="flex min-w-0 items-center gap-2 text-gray-200 dark:text-night-text">
                 <span
                   className="size-2.5 shrink-0 rounded-sm"
                   style={{ backgroundColor: d.color }}
@@ -34,10 +34,10 @@ export function StatusBarChart({ data, ariaLabel }: StatusBarChartProps) {
                 <span className="truncate">{d.label}</span>
               </span>
               <span className="shrink-0 tabular-nums text-gray-400">
-                <span className="font-bold text-gray-100">{d.value}</span> · {pct}%
+                <span className="font-bold text-gray-100 dark:text-night-text">{d.value}</span> · {pct}%
               </span>
             </div>
-            <div className="h-2 w-full overflow-hidden rounded-full bg-border-light">
+            <div className="h-2 w-full overflow-hidden rounded-full bg-border-light dark:bg-night-border">
               <div
                 className="h-full rounded-full transition-[width] duration-500"
                 style={{

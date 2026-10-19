@@ -37,7 +37,7 @@ export function Avatar({ initials, size = "sm", online, className }: AvatarProps
             size === "md" ? "size-3" : "size-2.5",
             online ? "bg-emerald-500" : "bg-gray-400",
           )}
-          style={{ borderColor: "var(--c-surface)" }}
+          style={{ borderColor: "var(--color-surface)" }}
         />
       )}
     </span>

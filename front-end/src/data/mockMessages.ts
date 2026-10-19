@@ -1,4 +1,5 @@
 import type { ChatContact, ChatMessage } from "@/types/chat";
+import { mockReceiptImage } from "./mockImages";
 
 const MINUTE = 60_000;
 const now = Date.now();
@@ -9,6 +10,8 @@ export const mockContact: ChatContact = {
   initials: "HC",
   role: "Advogada responsável",
   online: true,
+  phone: "(11) 98765-4321",
+  about: "Direito trabalhista e previdenciário",
 };
 
 /** Histórico inicial de mensagens para demonstração. */
@@ -50,5 +53,12 @@ export const mockMessages: ChatMessage[] = [
     author: "them",
     text: "Leve um documento com foto e os comprovantes de pagamento que você me enviou. Eu levo o restante.",
     createdAt: now - 5 * MINUTE,
+  },
+  {
+    id: "m7",
+    author: "me",
+    image: mockReceiptImage("Comprovante — 15/09"),
+    createdAt: now - 4 * MINUTE,
+    status: "sent",
   },
 ];

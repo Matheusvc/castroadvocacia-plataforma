@@ -20,6 +20,41 @@
   --c-gray-600: #f9fafa;
   --c-surface: #ffffff;
   --c-border-light: #e6e8ec;
+
+  /* Paleta semântica do tema (modo claro — padrão). */
+  --color-bg: #f9fafa;
+  --color-surface: #ffffff;
+  --color-text-primary: #1e2024;
+  --color-text-secondary: #858b99;
+  --color-border: #e6e8ec;
+  --color-sidebar: #151619;
+}
+
+/* Modo escuro: aplicado via classe "dark" no <html> (ver useTheme). */
+.dark {
+  --color-bg: #0f1117;
+  --color-surface: #1a1d27;
+  --color-text-primary: #e8e9ed;
+  --color-text-secondary: #858b99;
+  --color-border: #2a2d37;
+  --color-sidebar: #0a0b0f;
+}
+
+/*
+ * Transição suave ao alternar o tema — só enquanto a classe "theme-transition"
+ * está presente (adicionada/removida pelo useTheme ao redor da troca), para
+ * não deixar toda transição de hover/animação da UI mais lenta o tempo todo.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .theme-transition,
+  .theme-transition *,
+  .theme-transition *::before,
+  .theme-transition *::after {
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease !important;
+  }
 }
 
 html,
@@ -50,12 +85,17 @@ body {
   font-family: "Lato", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--c-gray-100);
-  color: var(--c-gray-100);
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
 }
 
-/* Foco visível consistente e acessível (WCAG 2.1 — 2.4.7). */
-:where(a, button, input, textarea, [tabindex]):focus-visible {
+/*
+ * Foco visível consistente e acessível (WCAG 2.1 — 2.4.7).
+ * `[tabindex="-1"]` fica de fora: é usado para mover o foco
+ * silenciosamente (ex.: título ao trocar de conversa), não para um
+ * controle real navegável por Tab — não deve ganhar anel visível.
+ */
+:where(a, button, input, textarea, [tabindex]):not([tabindex="-1"]):focus-visible {
   outline: 2px solid var(--c-blue-base);
   outline-offset: 2px;
   border-radius: 4px;

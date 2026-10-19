@@ -1,7 +1,8 @@
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import type { ChatMessage } from "@/types/chat";
 import { MessageBubble } from "./MessageBubble";
 import { TypingIndicator } from "./TypingIndicator";
+import { ImageLightbox } from "./ImageLightbox";
 
 interface MessageListProps {
   messages: ChatMessage[];
@@ -31,6 +32,13 @@ function dayLabel(value: number): string {
   return dayFmt.format(new Date(value));
 }
 
+/** Frase anunciada por leitores de tela quando o status da última mensagem muda. */
+const STATUS_ANNOUNCEMENT: Record<string, string> = {
+  sending: "Enviando mensagem.",
+  sent: "Mensagem enviada.",
+  error: "Falha ao enviar a mensagem. Toque em tentar novamente.",
+};
+
 /**
  * Lista de mensagens com rolagem automática para o fim e separadores de dia.
  *
@@ -47,6 +55,19 @@ export function MessageList({
 }: MessageListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const [openImage, setOpenImage] = useState<{ src: string; alt: string } | null>(
+    null,
+  );
+
+  // Status da última mensagem enviada por "me", para anúncio via aria-live.
+  let lastOwnStatus: string | undefined;
+  for (let i = messages.length - 1; i >= 0; i -= 1) {
+    const m = messages[i];
+    if (m.author === "me" && m.status) {
+      lastOwnStatus = m.status;
+      break;
+    }
+  }
 
   // Rola para a última mensagem quando a lista muda ou o indicador aparece.
   useEffect(() => {
@@ -56,7 +77,7 @@ export function MessageList({
   return (
     <div
       ref={scrollRef}
-      className="scrollbar-slim min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-5 sm:px-6"
+      className="scrollbar-slim min-h-0 flex-1 overflow-y-auto overscroll-contain bg-gray-600 px-4 py-6 sm:px-6"
     >
       <ul
         className="flex flex-col gap-4"
@@ -70,8 +91,8 @@ export function MessageList({
           return (
             <Fragment key={message.id}>
               {showDay && (
-                <li className="my-1 flex justify-center" aria-hidden="true">
-                  <span className="rounded-full bg-border-light px-3 py-1 text-xs font-bold uppercase tracking-wide text-gray-400">
+                <li className="my-2 flex justify-center" aria-hidden="true">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
                     {dayLabel(message.createdAt)}
                   </span>
                 </li>
@@ -80,6 +101,7 @@ export function MessageList({
                 message={message}
                 contactInitials={contactInitials}
                 onRetry={onRetry}
+                onOpenImage={(src, alt) => setOpenImage({ src, alt })}
               />
             </Fragment>
           );
@@ -92,7 +114,21 @@ export function MessageList({
           />
         )}
       </ul>
+
+      {/* Anúncio de status de envio para leitores de tela (não visível). */}
+      <p className="sr-only" role="status" aria-live="polite">
+        {lastOwnStatus ? STATUS_ANNOUNCEMENT[lastOwnStatus] : ""}
+      </p>
+
       <div ref={bottomRef} />
+
+      {openImage && (
+        <ImageLightbox
+          src={openImage.src}
+          alt={openImage.alt}
+          onClose={() => setOpenImage(null)}
+        />
+      )}
     </div>
   );
 }

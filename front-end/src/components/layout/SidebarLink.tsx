@@ -24,10 +24,10 @@ export function SidebarLink({ item, active, onSelect }: SidebarLinkProps) {
         }}
         className={cn(
           "flex items-center gap-3 rounded-sm p-3.5 text-base transition-colors",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-base focus-visible:ring-offset-2 focus-visible:ring-offset-gray-100",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-base focus-visible:ring-offset-2 focus-visible:ring-offset-gray-100 dark:focus-visible:ring-offset-night-sidebar",
           active
             ? "bg-blue-dark text-gray-600"
-            : "text-fuschia-60 hover:bg-gray-200",
+            : "text-fuschia-60 hover:bg-gray-200 dark:hover:bg-night-border/60",
         )}
       >
         <span className="inline-flex shrink-0">{item.icon}</span>

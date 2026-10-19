@@ -7,6 +7,7 @@ interface DashboardLayoutProps {
   activeId: string;
   onSelect: (id: string) => void;
   user: SidebarUser;
+  onLogout?: () => void;
   children: ReactNode;
 }
 
@@ -21,6 +22,7 @@ export function DashboardLayout({
   activeId,
   onSelect,
   user,
+  onLogout,
   children,
 }: DashboardLayoutProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -57,7 +59,7 @@ export function DashboardLayout({
   );
 
   return (
-    <div className="flex h-dvh min-h-dvh w-full flex-col overflow-hidden bg-gray-100">
+    <div className="flex h-dvh min-h-dvh w-full flex-col overflow-hidden bg-gray-100 dark:bg-night-sidebar">
       {/* Barra superior (sempre) */}
       <div ref={topBarRef} className="shrink-0">
         <MobileTopBar
@@ -69,7 +71,7 @@ export function DashboardLayout({
       </div>
 
       {/* Área de conteúdo (painel branco) */}
-      <main className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-t-content bg-gray-600 lg:mx-4 lg:mb-4 lg:rounded-[20px]">
+      <main className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-t-content bg-gray-600 dark:bg-night-bg lg:mx-4 lg:mb-4 lg:rounded-[20px]">
         {children}
       </main>
 
@@ -88,7 +90,7 @@ export function DashboardLayout({
             role="dialog"
             aria-modal="true"
             aria-label="Menu de navegação"
-            className="absolute inset-y-0 left-0 flex h-full w-[300px] max-w-[85vw] flex-col bg-gray-100 shadow-2xl"
+            className="absolute inset-y-0 left-0 flex h-full w-[300px] max-w-[85vw] flex-col bg-gray-100 shadow-2xl dark:bg-night-sidebar"
           >
             <div className="flex justify-end px-3 pt-3">
               <button
@@ -102,7 +104,12 @@ export function DashboardLayout({
               </button>
             </div>
             <div className="min-h-0 flex-1">
-              <Sidebar activeId={activeId} onSelect={handleSelect} user={user} />
+              <Sidebar
+                activeId={activeId}
+                onSelect={handleSelect}
+                user={user}
+                onLogout={onLogout}
+              />
             </div>
           </div>
         </div>

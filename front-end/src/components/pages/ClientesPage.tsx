@@ -86,11 +86,11 @@ export function ClientesPage() {
       </div>
 
       <div className="overflow-x-auto">
-        <div className="min-w-[760px] overflow-hidden rounded-[10px] border border-gray-500">
+        <div className="min-w-[760px] overflow-hidden rounded-[10px] border border-gray-500 dark:border-night-border">
           <table className="w-full border-collapse text-left">
             <caption className="sr-only">Lista de clientes</caption>
             <thead>
-              <tr className="h-12 border-b border-gray-500">
+              <tr className="h-12 border-b border-gray-500 dark:border-night-border">
                 <th scope="col" className="w-[240px] px-3 text-sm font-bold text-gray-400">
                   Nome
                 </th>
@@ -111,23 +111,23 @@ export function ClientesPage() {
               {filtered.map((client) => (
                 <tr
                   key={client.id}
-                  className="h-16 border-b border-gray-500 last:border-b-0"
+                  className="h-16 border-b border-gray-500 last:border-b-0 dark:border-night-border"
                 >
                   <td className="px-3">
                     <div className="flex items-center gap-3">
                       <Avatar initials={client.initials} size="xs" />
-                      <span className="truncate text-sm font-bold text-gray-200">
+                      <span className="truncate text-sm font-bold text-gray-200 dark:text-night-text">
                         {client.name}
                       </span>
                     </div>
                   </td>
                   <td className="px-3">
-                    <span className="truncate text-sm tabular-nums text-gray-200">
+                    <span className="truncate text-sm tabular-nums text-gray-200 dark:text-night-text">
                       {client.cpf}
                     </span>
                   </td>
                   <td className="pl-12 pr-3">
-                    <span className="truncate text-sm tabular-nums text-gray-200">
+                    <span className="truncate text-sm tabular-nums text-gray-200 dark:text-night-text">
                       {client.processNumber}
                     </span>
                   </td>

@@ -6,7 +6,7 @@ interface PageHeaderProps {
 export function PageHeader({ title }: PageHeaderProps) {
   return (
     <header className="shrink-0">
-      <h1 className="text-lg font-bold uppercase leading-[1.4] text-blue-dark lg:text-xl">
+      <h1 className="text-lg font-bold uppercase leading-[1.4] text-blue-dark dark:text-blue-light lg:text-xl">
         {title}
       </h1>
     </header>

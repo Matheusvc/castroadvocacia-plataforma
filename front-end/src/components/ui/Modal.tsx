@@ -86,17 +86,17 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
         aria-modal="true"
         aria-labelledby={titleId}
         onKeyDown={handleKeyDown}
-        className="relative z-10 flex max-h-[90dvh] w-full flex-col overflow-hidden rounded-t-[16px] bg-surface shadow-2xl animate-fade-in-up sm:max-w-md sm:rounded-[16px]"
+        className="relative z-10 flex max-h-[90dvh] w-full flex-col overflow-hidden rounded-t-[16px] bg-surface shadow-2xl animate-fade-in-up dark:bg-night-surface sm:max-w-md sm:rounded-[16px]"
       >
-        <header className="flex items-center justify-between border-b border-border-light px-5 py-4">
-          <h2 id={titleId} className="text-base font-bold text-gray-100">
+        <header className="flex items-center justify-between border-b border-border-light px-5 py-4 dark:border-night-border">
+          <h2 id={titleId} className="text-base font-bold text-gray-100 dark:text-night-text">
             {title}
           </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Fechar"
-            className="flex size-8 items-center justify-center rounded-sm text-gray-400 transition-colors hover:bg-gray-600 hover:text-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-base"
+            className="flex size-8 items-center justify-center rounded-sm text-gray-400 transition-colors hover:bg-gray-600 hover:text-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-base dark:hover:bg-night-border/60 dark:hover:text-night-text"
           >
             <X size={18} aria-hidden="true" />
           </button>

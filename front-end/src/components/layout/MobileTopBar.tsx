@@ -1,6 +1,7 @@
 import { BrandLogo } from "./BrandLogo";
 import { Avatar } from "./Avatar";
 import { InlineIcon } from "./InlineIcon";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import menuIcon from "@/assets/icon-menu.svg?raw";
 
 interface MobileTopBarProps {
@@ -28,13 +29,16 @@ export function MobileTopBar({
           aria-haspopup="menu"
           aria-expanded={menuOpen}
           aria-controls={menuId}
-          className="flex size-10 items-center justify-center rounded-sm bg-gray-200 text-gray-600 transition-colors hover:bg-gray-200/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-base"
+          className="flex size-10 items-center justify-center rounded-sm bg-gray-200 text-gray-600 transition-colors hover:bg-gray-200/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-base dark:bg-night-border dark:hover:bg-night-border/70"
         >
           <InlineIcon svg={menuIcon} className="size-5 [&>svg]:size-5" />
         </button>
         <BrandLogo iconSize={44} />
       </div>
-      <Avatar initials={userInitials} size="md" />
+      <div className="flex items-center gap-2">
+        <ThemeToggle />
+        <Avatar initials={userInitials} size="md" />
+      </div>
     </div>
   );
 }

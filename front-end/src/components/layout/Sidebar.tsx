@@ -13,6 +13,7 @@ interface SidebarProps {
   activeId: string;
   onSelect: (id: string) => void;
   user: SidebarUser;
+  onLogout?: () => void;
   /** Rótulo da navegação para leitores de tela. */
   navLabel?: string;
 }
@@ -22,11 +23,12 @@ export function Sidebar({
   activeId,
   onSelect,
   user,
+  onLogout,
   navLabel = "Navegação principal",
 }: SidebarProps) {
   return (
-    <div className="flex h-full w-full flex-col bg-gray-100">
-      <div className="flex items-center border-b border-gray-200 px-5 py-6">
+    <div className="flex h-full w-full flex-col bg-gray-100 dark:bg-night-sidebar">
+      <div className="flex items-center border-b border-gray-200 px-5 py-6 dark:border-night-border">
         <BrandLogo iconSize={44} />
       </div>
 
@@ -43,7 +45,12 @@ export function Sidebar({
         </ul>
       </nav>
 
-      <UserCard name={user.name} email={user.email} initials={user.initials} />
+      <UserCard
+        name={user.name}
+        email={user.email}
+        initials={user.initials}
+        onLogout={onLogout}
+      />
     </div>
   );
 }

@@ -17,14 +17,14 @@ export function SelectField({ label, value, onChange, options }: SelectFieldProp
   const id = useId();
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-bold text-gray-200">
+      <label htmlFor={id} className="text-sm font-bold text-gray-200 dark:text-night-text">
         {label}
       </label>
       <select
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-10 rounded-sm border border-gray-500 bg-surface px-3 text-sm text-gray-100 focus-visible:border-blue-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-base/30"
+        className="h-10 rounded-sm border border-gray-500 bg-surface px-3 text-sm text-gray-100 focus-visible:border-blue-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-base/30 dark:border-night-border dark:bg-night-surface dark:text-night-text"
       >
         {options.map((opt) => (
           <option key={opt.value} value={opt.value}>

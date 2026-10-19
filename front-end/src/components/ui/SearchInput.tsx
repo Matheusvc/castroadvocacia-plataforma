@@ -33,14 +33,14 @@ export function SearchInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="h-10 w-full rounded-sm border border-gray-500 bg-surface pl-9 pr-9 text-sm text-gray-100 placeholder:text-gray-400 focus-visible:border-blue-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-base/30"
+        className="h-10 w-full rounded-sm border border-gray-500 bg-surface pl-9 pr-9 text-sm text-gray-100 placeholder:text-gray-400 focus-visible:border-blue-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-base/30 dark:border-night-border dark:bg-night-surface dark:text-night-text"
       />
       {value && (
         <button
           type="button"
           onClick={() => onChange("")}
           aria-label="Limpar busca"
-          className="absolute right-2 top-1/2 flex size-6 -translate-y-1/2 items-center justify-center rounded-sm text-gray-400 transition-colors hover:text-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-base"
+          className="absolute right-2 top-1/2 flex size-6 -translate-y-1/2 items-center justify-center rounded-sm text-gray-400 transition-colors hover:text-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-base dark:hover:text-night-text"
         >
           <X size={14} aria-hidden="true" />
         </button>

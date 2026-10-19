@@ -1,7 +1,8 @@
 import type { Config } from "tailwindcss";
-import { colors, fonts, fontSize, radii } from "./src/theme";
+import { colors, fonts, fontSize, night, radii } from "./src/theme";
 
 export default {
+  darkMode: "class",
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
@@ -15,6 +16,7 @@ export default {
         "bubble-sent": colors.bubbleSent,
         danger: colors.danger,
         status: colors.status,
+        night,
       },
       fontFamily: {
         sans: [...fonts.sans],

@@ -20,7 +20,7 @@ export function ConversasPage() {
       {/* Lista (escondida no mobile quando um chat está aberto) */}
       <div
         className={cn(
-          "min-h-0 w-full flex-col border-border-light lg:flex lg:w-[340px] lg:shrink-0 lg:border-r",
+          "min-h-0 w-full flex-col border-border-light dark:border-night-border lg:flex lg:w-[320px] lg:shrink-0 lg:border-r xl:w-[380px]",
           selectedId ? "hidden lg:flex" : "flex",
         )}
       >
@@ -48,14 +48,14 @@ export function ConversasPage() {
             onBack={() => setSelectedId(null)}
           />
         ) : (
-          <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 p-8 text-center">
-            <span className="flex size-14 items-center justify-center rounded-full bg-blue-base/10 text-blue-dark">
-              <MessagesSquare size={26} aria-hidden="true" />
+          <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 bg-gray-600 p-8 text-center dark:bg-night-bg">
+            <span className="flex size-16 items-center justify-center rounded-full bg-blue-base/10 text-blue-dark">
+              <MessagesSquare size={28} aria-hidden="true" />
             </span>
-            <p className="text-base font-bold text-gray-100">
+            <p className="text-lg font-bold text-gray-100 dark:text-night-text">
               Selecione uma conversa
             </p>
-            <p className="max-w-xs text-sm text-gray-400">
+            <p className="max-w-xs text-sm leading-relaxed text-gray-400">
               Escolha uma pessoa na lista para ver o histórico e responder.
             </p>
           </div>

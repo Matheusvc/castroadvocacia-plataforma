@@ -36,6 +36,7 @@ export const colors = {
     done: "#508B26", // feedback/done — "Encerrado"
     analise: "#B9770E", // feedback/analise — "Em análise" (não existia no Figma)
     pendente: "#8996EB", // = blue.light — "Pendente" (não existia no Figma)
+    granted: "#0F8A6B", // feedback/granted — "Concedido" / "Sentença procedente" (não existia no Figma)
   },
 
   // --- Assumidos (não existiam no Figma) para a superfície clara do chat ---
@@ -43,6 +44,21 @@ export const colors = {
   borderLight: "#E6E8EC", // bordas sobre fundo claro
   bubbleReceived: "#FFFFFF",
   bubbleSent: "#5165E1", // = blue.base
+} as const;
+
+/**
+ * Contrapartes do modo escuro para os tokens "claros" de `colors` (fundo
+ * principal, superfície de cards/tabelas, texto primário, bordas e sidebar).
+ * Consumidas via classes `dark:` no Tailwind (ex.: `dark:bg-night-bg`).
+ * Texto secundário (`gray.400`) e a cor de marca (`blue.base`) permanecem
+ * idênticos em ambos os modos — não entram aqui.
+ */
+export const night = {
+  bg: "#0F1117", // fundo principal
+  surface: "#1A1D27", // fundo de cards/tabelas
+  text: "#E8E9ED", // texto primário
+  border: "#2A2D37", // bordas
+  sidebar: "#0A0B0F", // sidebar (mais escura que no modo claro)
 } as const;
 
 export const radii = {

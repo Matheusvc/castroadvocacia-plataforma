@@ -35,23 +35,17 @@ export function ConversationListItem({
         onClick={() => onSelect(conversation.id)}
         aria-current={selected ? "true" : undefined}
         className={cn(
-          "relative flex w-full items-center gap-3 border-b border-border-light py-3 pl-4 pr-4 text-left transition-colors",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-base",
-          selected ? "bg-blue-base/[0.07]" : "hover:bg-gray-600",
+          "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-base",
+          selected
+            ? "bg-blue-base/[0.08] dark:bg-blue-base/[0.15]"
+            : "hover:bg-gray-600 dark:hover:bg-night-border/40",
         )}
       >
-        {/* Barra de destaque do item selecionado */}
-        <span
-          aria-hidden="true"
-          className={cn(
-            "absolute inset-y-0 left-0 w-[3px] rounded-r-full bg-blue-base transition-opacity",
-            selected ? "opacity-100" : "opacity-0",
-          )}
-        />
         <Avatar initials={contact.initials} size="md" online={contact.online} />
         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
           <span className="flex items-center justify-between gap-2">
-            <span className="truncate text-sm font-bold text-gray-100">
+            <span className="truncate text-sm font-bold text-gray-100 dark:text-night-text">
               {contact.name}
             </span>
             <span
@@ -67,7 +61,7 @@ export function ConversationListItem({
             <span
               className={cn(
                 "truncate text-xs",
-                hasUnread ? "text-gray-200" : "text-gray-400",
+                hasUnread ? "text-gray-200 dark:text-night-text" : "text-gray-400",
               )}
             >
               {lastMessage}

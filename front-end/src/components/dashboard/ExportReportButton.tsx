@@ -11,12 +11,19 @@ export interface ReportData {
     pending: number;
     deltas: { total: number; active: number; inactive: number; pending: number };
   };
-  services: {
+  adminProcess: {
     open: number;
-    progress: number;
-    done: number;
-    analise: number;
-    pendente: number;
+    inAnalysis: number;
+    granted: number;
+    pending: number;
+    total: number;
+  };
+  judicialProcess: {
+    denied: number;
+    inCourt: number;
+    settlementOffer: number;
+    favorableRuling: number;
+    pending: number;
     total: number;
   };
 }
@@ -40,7 +47,7 @@ function downloadText(filename: string, text: string, mime: string) {
 }
 
 function buildCsv(d: ReportData): string {
-  const { clients: c, services: s } = d;
+  const { clients: c, adminProcess: a, judicialProcess: j } = d;
   const rows: string[][] = [
     ["Relatório do Dashboard — Castro Advocacia"],
     ["Gerado em", new Date().toLocaleString("pt-BR")],
@@ -56,12 +63,18 @@ function buildCsv(d: ReportData): string {
     ["Inativos", String(c.inactive), pct(c.inactive, c.total)],
     ["Pendentes", String(c.pending), pct(c.pending, c.total)],
     [],
-    ["Processos por status", "Quantidade", "Percentual"],
-    ["Aberto", String(s.open), pct(s.open, s.total)],
-    ["Em análise", String(s.analise), pct(s.analise, s.total)],
-    ["Em atendimento", String(s.progress), pct(s.progress, s.total)],
-    ["Concluído", String(s.done), pct(s.done, s.total)],
-    ["Pendente", String(s.pendente), pct(s.pendente, s.total)],
+    ["Processos por status administrativo", "Quantidade", "Percentual"],
+    ["Aberto", String(a.open), pct(a.open, a.total)],
+    ["Em análise", String(a.inAnalysis), pct(a.inAnalysis, a.total)],
+    ["Concedido", String(a.granted), pct(a.granted, a.total)],
+    ["Pendente", String(a.pending), pct(a.pending, a.total)],
+    [],
+    ["Processos por status judicial", "Quantidade", "Percentual"],
+    ["Indeferido", String(j.denied), pct(j.denied, j.total)],
+    ["Tramitando no judicial", String(j.inCourt), pct(j.inCourt, j.total)],
+    ["Proposta de acordo", String(j.settlementOffer), pct(j.settlementOffer, j.total)],
+    ["Sentença procedente", String(j.favorableRuling), pct(j.favorableRuling, j.total)],
+    ["Pendente", String(j.pending), pct(j.pending, j.total)],
   ];
   const body = rows
     .map((r) => r.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(";"))
@@ -71,7 +84,7 @@ function buildCsv(d: ReportData): string {
 }
 
 function buildReportHtml(d: ReportData): string {
-  const { clients: c, services: s } = d;
+  const { clients: c, adminProcess: a, judicialProcess: j } = d;
   const row = (label: string, value: string | number, extra: string) =>
     `<tr><td>${label}</td><td class="num">${value}</td><td class="num muted">${extra}</td></tr>`;
   return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
@@ -119,13 +132,21 @@ function buildReportHtml(d: ReportData): string {
     ${row("Pendentes", c.pending, pct(c.pending, c.total))}
   </tbody></table>
 
-  <h2>Processos por status</h2>
+  <h2>Processos por status administrativo</h2>
   <table><thead><tr><th>Status</th><th class="num">Quantidade</th><th class="num">Percentual</th></tr></thead><tbody>
-    ${row("Aberto", s.open, pct(s.open, s.total))}
-    ${row("Em análise", s.analise, pct(s.analise, s.total))}
-    ${row("Em atendimento", s.progress, pct(s.progress, s.total))}
-    ${row("Concluído", s.done, pct(s.done, s.total))}
-    ${row("Pendente", s.pendente, pct(s.pendente, s.total))}
+    ${row("Aberto", a.open, pct(a.open, a.total))}
+    ${row("Em análise", a.inAnalysis, pct(a.inAnalysis, a.total))}
+    ${row("Concedido", a.granted, pct(a.granted, a.total))}
+    ${row("Pendente", a.pending, pct(a.pending, a.total))}
+  </tbody></table>
+
+  <h2>Processos por status judicial</h2>
+  <table><thead><tr><th>Status</th><th class="num">Quantidade</th><th class="num">Percentual</th></tr></thead><tbody>
+    ${row("Indeferido", j.denied, pct(j.denied, j.total))}
+    ${row("Tramitando no judicial", j.inCourt, pct(j.inCourt, j.total))}
+    ${row("Proposta de acordo", j.settlementOffer, pct(j.settlementOffer, j.total))}
+    ${row("Sentença procedente", j.favorableRuling, pct(j.favorableRuling, j.total))}
+    ${row("Pendente", j.pending, pct(j.pending, j.total))}
   </tbody></table>
 
   <footer>Gerado em ${new Date().toLocaleString("pt-BR")} · Castro Advocacia</footer>
@@ -223,13 +244,13 @@ export function ExportReportButton({ data }: ExportReportButtonProps) {
         <div
           role="menu"
           aria-label="Opções de exportação"
-          className="absolute right-0 z-20 mt-2 w-56 overflow-hidden rounded-lg border border-gray-500 bg-surface py-1 shadow-card-hover"
+          className="absolute right-0 z-20 mt-2 w-56 overflow-hidden rounded-lg border border-gray-500 bg-surface py-1 shadow-card-hover dark:border-night-border dark:bg-night-surface"
         >
           <button
             type="button"
             role="menuitem"
             onClick={handlePrint}
-            className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-gray-200 transition-colors hover:bg-gray-600 focus-visible:bg-gray-600 focus-visible:outline-none"
+            className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-gray-200 transition-colors hover:bg-gray-600 focus-visible:bg-gray-600 focus-visible:outline-none dark:text-night-text dark:hover:bg-night-border/60 dark:focus-visible:bg-night-border/60"
           >
             <Printer size={16} aria-hidden="true" className="text-gray-400" />
             Imprimir / Salvar PDF
@@ -240,7 +261,7 @@ export function ExportReportButton({ data }: ExportReportButtonProps) {
             onClick={handleCsv}
             className={cn(
               "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-gray-200 transition-colors",
-              "hover:bg-gray-600 focus-visible:bg-gray-600 focus-visible:outline-none",
+              "hover:bg-gray-600 focus-visible:bg-gray-600 focus-visible:outline-none dark:text-night-text dark:hover:bg-night-border/60 dark:focus-visible:bg-night-border/60",
             )}
           >
             <FileSpreadsheet size={16} aria-hidden="true" className="text-gray-400" />
