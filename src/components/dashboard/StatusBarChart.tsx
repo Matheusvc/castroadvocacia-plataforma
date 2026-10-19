@@ -24,16 +24,16 @@ export function StatusBarChart({ data, ariaLabel }: StatusBarChartProps) {
         const pct = Math.round((d.value / total) * 100);
         return (
           <li key={d.label} className="flex flex-col gap-2">
-            <div className="flex items-center justify-between text-sm">
-              <span className="flex items-center gap-2 text-gray-200">
+            <div className="flex items-center justify-between gap-3 text-sm">
+              <span className="flex min-w-0 items-center gap-2 text-gray-200">
                 <span
                   className="size-2.5 shrink-0 rounded-sm"
                   style={{ backgroundColor: d.color }}
                   aria-hidden="true"
                 />
-                {d.label}
+                <span className="truncate">{d.label}</span>
               </span>
-              <span className="tabular-nums text-gray-400">
+              <span className="shrink-0 tabular-nums text-gray-400">
                 <span className="font-bold text-gray-100">{d.value}</span> · {pct}%
               </span>
             </div>

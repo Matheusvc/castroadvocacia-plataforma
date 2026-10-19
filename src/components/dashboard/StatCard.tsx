@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/cn";
 
@@ -14,6 +14,10 @@ interface StatCardProps {
   delta?: number;
   /** Quando true, uma variação positiva é considerada negativa (ex.: inativos). */
   invert?: boolean;
+  /** Classes extras (ex.: animação de entrada aplicada pela página). */
+  className?: string;
+  /** Estilos inline extras (ex.: animation-delay para efeito escalonado). */
+  style?: CSSProperties;
 }
 
 /** Cartão de indicador (KPI) do Dashboard, com tendência. */
@@ -25,20 +29,28 @@ export function StatCard({
   accentBg = "bg-blue-base/10",
   delta,
   invert = false,
+  className,
+  style,
 }: StatCardProps) {
   const hasDelta = typeof delta === "number";
   const up = (delta ?? 0) >= 0;
   const isGood = up ? !invert : invert;
 
   return (
-    <article className="group flex flex-col gap-3 rounded-xl border border-gray-500/70 bg-surface p-5 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover">
+    <article
+      style={style}
+      className={cn(
+        "group flex flex-col gap-3 rounded-xl border border-gray-500/70 bg-surface p-5 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-base/30 hover:shadow-card-hover",
+        className,
+      )}
+    >
       <div className="flex items-start justify-between">
         <span className="text-xs font-bold uppercase tracking-[0.6px] text-gray-400">
           {label}
         </span>
         <span
           className={cn(
-            "flex size-9 items-center justify-center rounded-full",
+            "flex size-9 items-center justify-center rounded-full transition-transform duration-200 group-hover:scale-110",
             accentBg,
             accent,
           )}
